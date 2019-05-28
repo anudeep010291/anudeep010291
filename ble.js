@@ -9,48 +9,38 @@ var myService = 0xffb0;        // fill in a service you're looking for here
 var myCharacteristic = 0xffb2;   // fill in a characteristic from the service here
 
 function connect(){
-  
-  navigator.bluetooth.requestDevice({ filters: [{ services: ['battery_service'] }] })
-.then(device => {
-  // Human-readable name of the device.
-  console.log(device.name);
 
-  // Attempts to connect to remote GATT Server.
-  return device.gatt.connect();
-})
-.then(server => { /* ... */ })
-.catch(error => { console.log(error); });
-//   navigator.bluetooth.requestDevice({
-//     // filters: [myFilters]       // you can't use filters and acceptAllDevices together
-//     optionalServices: [myService],
-//     acceptAllDevices: true
-//   })
-//   .then(function(device) {
-//     // save the device returned so you can disconnect later:
-//     myDevice = device;
-//     console.log(device);
-//     // connect to the device once you find it:
-//     return device.gatt.connect();
-//   })
-//   .then(function(server) {
-//     // get the primary service:
-//     return server.getPrimaryService(myService);
-//   })
-//   .then(function(service) {
-//     // get the  characteristic:
-//     return service.getCharacteristics();
-//   })
-//   .then(function(characteristics) {
-//     // subscribe to the characteristic:
-//     for (c in characteristics) {
-//       characteristics[c].startNotifications()
-//       .then(subscribeToChanges);
-//     }
-//   })
-//   .catch(function(error) {
-//     // catch any errors:
-//     console.error('Connection failed!', error);
-//   });
+  navigator.bluetooth.requestDevice({
+    // filters: [myFilters]       // you can't use filters and acceptAllDevices together
+    optionalServices: [myService],
+    acceptAllDevices: true
+  })
+  .then(function(device) {
+    // save the device returned so you can disconnect later:
+    myDevice = device;
+    console.log(device);
+    // connect to the device once you find it:
+    return device.gatt.connect();
+  })
+  .then(function(server) {
+    // get the primary service:
+    return server.getPrimaryService(myService);
+  })
+  .then(function(service) {
+    // get the  characteristic:
+    return service.getCharacteristics();
+  })
+  .then(function(characteristics) {
+    // subscribe to the characteristic:
+    for (c in characteristics) {
+      characteristics[c].startNotifications()
+      .then(subscribeToChanges);
+    }
+  })
+  .catch(function(error) {
+    // catch any errors:
+    console.error('Connection failed!', error);
+  });
 }
 
 // subscribe to changes from the meter:
